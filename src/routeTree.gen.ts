@@ -23,9 +23,11 @@ import { Route as AuthenticatedFormsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated/events'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCommunitiesRouteImport } from './routes/_authenticated/communities'
+import { Route as FormsPTokenRouteImport } from './routes/forms.p.$token'
 import { Route as AuthenticatedAdminWebhooksRouteImport } from './routes/_authenticated/admin.webhooks'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminLogsRouteImport } from './routes/_authenticated/admin.logs'
+import { Route as ApiPublicFormsTokenRouteImport } from './routes/api/public/forms.$token'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -97,6 +99,11 @@ const AuthenticatedCommunitiesRoute =
     path: '/communities',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const FormsPTokenRoute = FormsPTokenRouteImport.update({
+  id: '/forms/p/$token',
+  path: '/forms/p/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminWebhooksRoute =
   AuthenticatedAdminWebhooksRouteImport.update({
     id: '/admin/webhooks',
@@ -112,6 +119,11 @@ const AuthenticatedAdminLogsRoute = AuthenticatedAdminLogsRouteImport.update({
   id: '/admin/logs',
   path: '/admin/logs',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const ApiPublicFormsTokenRoute = ApiPublicFormsTokenRouteImport.update({
+  id: '/api/public/forms/$token',
+  path: '/api/public/forms/$token',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -131,6 +143,8 @@ export interface FileRoutesByFullPath {
   '/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
+  '/forms/p/$token': typeof FormsPTokenRoute
+  '/api/public/forms/$token': typeof ApiPublicFormsTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -149,6 +163,8 @@ export interface FileRoutesByTo {
   '/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
+  '/forms/p/$token': typeof FormsPTokenRoute
+  '/api/public/forms/$token': typeof ApiPublicFormsTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -169,6 +185,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
+  '/forms/p/$token': typeof FormsPTokenRoute
+  '/api/public/forms/$token': typeof ApiPublicFormsTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -189,6 +207,8 @@ export interface FileRouteTypes {
     | '/admin/logs'
     | '/admin/users'
     | '/admin/webhooks'
+    | '/forms/p/$token'
+    | '/api/public/forms/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -207,6 +227,8 @@ export interface FileRouteTypes {
     | '/admin/logs'
     | '/admin/users'
     | '/admin/webhooks'
+    | '/forms/p/$token'
+    | '/api/public/forms/$token'
   id:
     | '__root__'
     | '/'
@@ -226,6 +248,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/logs'
     | '/_authenticated/admin/users'
     | '/_authenticated/admin/webhooks'
+    | '/forms/p/$token'
+    | '/api/public/forms/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -233,6 +257,8 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  FormsPTokenRoute: typeof FormsPTokenRoute
+  ApiPublicFormsTokenRoute: typeof ApiPublicFormsTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -335,6 +361,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCommunitiesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/forms/p/$token': {
+      id: '/forms/p/$token'
+      path: '/forms/p/$token'
+      fullPath: '/forms/p/$token'
+      preLoaderRoute: typeof FormsPTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/webhooks': {
       id: '/_authenticated/admin/webhooks'
       path: '/admin/webhooks'
@@ -355,6 +388,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/logs'
       preLoaderRoute: typeof AuthenticatedAdminLogsRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/public/forms/$token': {
+      id: '/api/public/forms/$token'
+      path: '/api/public/forms/$token'
+      fullPath: '/api/public/forms/$token'
+      preLoaderRoute: typeof ApiPublicFormsTokenRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -400,6 +440,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  FormsPTokenRoute: FormsPTokenRoute,
+  ApiPublicFormsTokenRoute: ApiPublicFormsTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

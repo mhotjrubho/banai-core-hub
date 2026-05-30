@@ -14,7 +14,7 @@ export const Route = createFileRoute("/api/public/forms/$token")({
           }
           const ip = request.headers.get("x-forwarded-for") ?? null;
           const { error } = await supabaseAdmin.from("form_submissions").insert({
-            form_id: form.id, payload: body, source: "public_form", source_ip: ip,
+            form_id: form.id, payload: body, source: "public_link", source_ip: ip,
           });
           if (error) throw new Error(error.message);
           await supabaseAdmin.from("webhook_log").insert({
