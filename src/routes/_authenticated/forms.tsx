@@ -92,7 +92,7 @@ function FormBuilder({ form }: { form: FormDef }) {
     const { error } = await supabase.from("form_fields").insert({
       form_id: form.id, sort_order: sort,
       field_key: values.field_key!, label: values.label!,
-      field_type: values.field_type as Field["field_type"],
+      field_type: values.field_type as never,
       is_required: values.is_required ?? false, placeholder: values.placeholder ?? null,
     });
     if (error) toast.error(error.message);

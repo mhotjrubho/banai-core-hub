@@ -66,7 +66,7 @@ function UsersAdmin() {
       const row = (roles ?? []).find((r) => r.user_id === userId && r.role === role);
       if (row) await supabase.from("user_roles").delete().eq("id", row.id);
     } else {
-      await supabase.from("user_roles").insert({ user_id: userId, role: role as RoleRow["role"] });
+      await supabase.from("user_roles").insert({ user_id: userId, role: role as never });
     }
     qc.invalidateQueries({ queryKey: ["all-user-roles"] });
     toast.success("הרשאה עודכנה");
@@ -134,7 +134,7 @@ function UsersAdmin() {
 function ScopeEditor({ profile }: { profile: ProfileRow }) {
   const qc = useQueryClient();
   const update = async (level: string) => {
-    await supabase.from("profiles").update({ scope_level: level as ProfileRow["scope_level"] }).eq("id", profile.id);
+    await supabase.from("profiles").update({ scope_level: level as never }).eq("id", profile.id);
     qc.invalidateQueries({ queryKey: ["all-profiles"] });
     toast.success("היקף עודכן");
   };
