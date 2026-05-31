@@ -12,6 +12,7 @@ function Dashboard() {
   const { profile, roles, isAdmin } = useAuth();
   const qc = useQueryClient();
   const [liveConnected, setLiveConnected] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   const { data: kpis } = useQuery({
     queryKey: ["dashboard-kpis"],
@@ -32,6 +33,10 @@ function Dashboard() {
       };
     },
   });
+
+  useEffect(() => {
+    if (kpis) setLastUpdated(new Date().toLocaleString());
+  }, [kpis]);
 
   // Realtime: invalidate KPIs when core tables change so UI updates quickly
   useEffect(() => {
@@ -75,11 +80,23 @@ function Dashboard() {
 
   return (
     <div>
-      <header className="h-16 bg-card border-b flex items-center justify-between px-8 sticky top-0 z-10">
-        <h2 className="text-lg font-semibold">לוח בקרה כללי</h2>
-        <div className="text-xs text-muted-foreground">
-          שלום, <span className="font-semibold text-foreground">{profile?.full_name ?? ""}</span>
-          {roles.length > 0 && <span className="mr-2 px-2 py-0.5 bg-secondary rounded text-[10px]">{roles.map((r) => ROLE_LABELS[r] ?? r).join(", ")}</span>}
+      <header className="h-20 bg-card border-b flex items-center justify-between px-8 sticky top-0 z-10">
+        <div>
+          <h2 className="text-lg font-semibold">לוח בקרה כללי</h2>
+          <div className="text-xs text-muted-foreground mt-1">שלום, <span className="font-semibold text-foreground">{profile?.full_name ?? ""}</span>
+            {roles.length > 0 && <span className="mr-2 px-2 py-0.5 bg-secondary rounded text-[10px]">{roles.map((r) => ROLE_LABELS[r] ?? r).join(", ")}</span>}
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          {liveConnected ? (
+            <div className="flex items-center gap-2">
+              <span className="inline-block w-3 h-3 rounded-full bg-emerald-500" />
+              <div className="text-sm font-medium">Live updates</div>
+              {lastUpdated && <div className="text-[11px] text-muted-foreground mr-3">עדכון אחרון: {lastUpdated}</div>}
+            </div>
+          ) : (
+            <div className="text-sm text-amber-600">Realtime disabled</div>
+          )}
         </div>
       </header>
       <div className="p-8 space-y-8">
