@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RequireModule } from "@/components/require-module";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit2 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -11,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 
 type Row = { id: string; title: string; description: string | null; status: string; output_type: string | null; dimensions: string | null; deadline: string | null };
 
-export const Route = createFileRoute("/_authenticated/graphics")({ component: GraphicsPage });
+export const Route = createFileRoute("/_authenticated/graphics")({ component: () => <RequireModule module="graphics"><GraphicsPage /></RequireModule> });
 
 function GraphicsPage() {
   const { data: rows } = useList<Row>("graphics_tasks", { orderBy: "created_at" });

@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { RequireModule } from "@/components/require-module";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit2, ExternalLink, Copy, Eye } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -18,7 +19,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-export const Route = createFileRoute("/_authenticated/forms")({ component: FormsPage });
+export const Route = createFileRoute("/_authenticated/forms")({ component: () => <RequireModule module="forms"><FormsPage /></RequireModule> });
 
 type FormDef = { id: string; slug: string; name: string; description: string | null; is_public: boolean; is_active: boolean; public_token: string | null; target_table: string | null };
 type Field = { id: string; form_id: string; field_key: string; label: string; field_type: string; is_required: boolean; sort_order: number; options: unknown; placeholder: string | null };

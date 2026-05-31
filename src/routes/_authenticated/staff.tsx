@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RequireModule } from "@/components/require-module";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Edit2 } from "lucide-react";
@@ -13,7 +14,7 @@ import { downloadXLSX } from "@/lib/csv";
 
 type Row = { id: string; first_name: string; last_name: string; role: string; national_id: string | null; phone: string | null; email: string | null; salary_model: string; bank_name: string | null; bank_branch: string | null; bank_account: string | null; staff_group: string | null; is_active: boolean };
 
-export const Route = createFileRoute("/_authenticated/staff")({ component: StaffPage });
+export const Route = createFileRoute("/_authenticated/staff")({ component: () => <RequireModule module="staff"><StaffPage /></RequireModule> });
 
 function StaffPage() {
   const [q, setQ] = useState("");
