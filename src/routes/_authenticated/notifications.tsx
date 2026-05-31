@@ -25,6 +25,26 @@ function NotificationsPage() {
     },
   });
 
+  // Realtime: refresh when settings change
+  useEffect(() => {
+    const subs: any[] = [];
+    try {
+      if (user) {
+        if ((supabase as any).channel) {
+          const ch = (supabase as any)
+            .channel('public:notifications_settings')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications_settings', filter: `user_id=eq.${user.id}` }, () => qc.invalidateQueries(["notifications-settings", user.id]))
+            .subscribe();
+          subs.push(ch);
+        } else if ((supabase as any).from) {
+          const s = (supabase as any).from(`notifications_settings:user_id=eq.${user.id}`).on('*', () => qc.invalidateQueries(["notifications-settings", user.id])).subscribe();
+          subs.push(s);
+        }
+      }
+    } catch (err) {}
+    return () => subs.forEach((s) => { try { if (s?.unsubscribe) s.unsubscribe(); else if ((supabase as any).removeChannel) (supabase as any).removeChannel(s); } catch (_) {} });
+  }, [qc, user]);
+
   useEffect(() => {
     if (data) {
       setChannels((data.channels ?? []).join(","));

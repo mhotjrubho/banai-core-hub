@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
@@ -20,6 +20,35 @@ function ChatPage() {
       return data ?? [];
     },
   });
+
+  // Realtime subscribe to new chat messages
+  useEffect(() => {
+    const subs: any[] = [];
+    try {
+      if ((supabase as any).channel) {
+        const ch = (supabase as any)
+          .channel('public:chat_messages')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages' }, () => {
+            qc.invalidateQueries(['chat-messages']);
+          })
+          .subscribe();
+        subs.push(ch);
+      } else if ((supabase as any).from) {
+        const s = (supabase as any).from('chat_messages').on('*', () => qc.invalidateQueries(['chat-messages'])).subscribe();
+        subs.push(s);
+      }
+    } catch (err) {
+      // ignore
+    }
+    return () => {
+      subs.forEach((s) => {
+        try {
+          if (s?.unsubscribe) s.unsubscribe();
+          else if ((supabase as any).removeChannel) (supabase as any).removeChannel(s);
+        } catch (_) {}
+      });
+    };
+  }, [qc]);
 
   const [recipient, setRecipient] = useState("");
   const [content, setContent] = useState("");
