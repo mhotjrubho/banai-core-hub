@@ -1,6 +1,6 @@
 import type { AppRole } from "./auth-context";
 
-export const ROLE_LABELS: Record<AppRole, string> = {
+export const ROLE_LABELS: Record<string, string> = {
   super_admin: "מנהל-על (מתכנת)",
   developer: "מתכנת",
   ceo: "מנכ\"ל",
