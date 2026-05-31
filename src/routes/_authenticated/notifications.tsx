@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 const CHANNELS = [
-  { key: "email", label: "דוא""ל" },
+  { key: "email", label: "דוא\"ל" },
   { key: "sms", label: "SMS" },
   { key: "push", label: "Push" },
   { key: "phone", label: "שיחת טלפון" },
