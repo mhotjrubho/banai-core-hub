@@ -23,6 +23,11 @@ import { Route as AuthenticatedFormsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated/events'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCommunitiesRouteImport } from './routes/_authenticated/communities'
+import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
+import { Route as AuthenticatedBugReportsRouteImport } from './routes/_authenticated/bug_reports'
+import { Route as AuthenticatedStudentDetailRouteImport } from './routes/_authenticated/students.$id'
+import { Route as AuthenticatedEventDetailRouteImport } from './routes/_authenticated/events.$id'
 import { Route as FormsPTokenRouteImport } from './routes/forms.p.$token'
 import { Route as AuthenticatedAdminWebhooksRouteImport } from './routes/_authenticated/admin.webhooks'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
@@ -88,6 +93,31 @@ const AuthenticatedEventsRoute = AuthenticatedEventsRouteImport.update({
   path: '/events',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedNotificationsRoute = AuthenticatedNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedBugReportsRoute = AuthenticatedBugReportsRouteImport.update({
+  id: '/bug-reports',
+  path: '/bug-reports',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedStudentDetailRoute = AuthenticatedStudentDetailRouteImport.update({
+  id: '/students/$id',
+  path: '/students/$id',
+  getParentRoute: () => AuthenticatedStudentsRoute,
+} as any)
+const AuthenticatedEventDetailRoute = AuthenticatedEventDetailRouteImport.update({
+  id: '/events/$id',
+  path: '/events/$id',
+  getParentRoute: () => AuthenticatedEventsRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -132,6 +162,9 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/communities': typeof AuthenticatedCommunitiesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/chat': typeof AuthenticatedChatRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/bug-reports': typeof AuthenticatedBugReportsRoute
   '/events': typeof AuthenticatedEventsRoute
   '/forms': typeof AuthenticatedFormsRoute
   '/graphics': typeof AuthenticatedGraphicsRoute
@@ -139,6 +172,8 @@ export interface FileRoutesByFullPath {
   '/reports': typeof AuthenticatedReportsRoute
   '/staff': typeof AuthenticatedStaffRoute
   '/students': typeof AuthenticatedStudentsRoute
+  '/students/$id': typeof AuthenticatedStudentDetailRoute
+  '/events/$id': typeof AuthenticatedEventDetailRoute
   '/vendors': typeof AuthenticatedVendorsRoute
   '/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -152,6 +187,9 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/communities': typeof AuthenticatedCommunitiesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/chat': typeof AuthenticatedChatRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/bug-reports': typeof AuthenticatedBugReportsRoute
   '/events': typeof AuthenticatedEventsRoute
   '/forms': typeof AuthenticatedFormsRoute
   '/graphics': typeof AuthenticatedGraphicsRoute
@@ -159,6 +197,8 @@ export interface FileRoutesByTo {
   '/reports': typeof AuthenticatedReportsRoute
   '/staff': typeof AuthenticatedStaffRoute
   '/students': typeof AuthenticatedStudentsRoute
+  '/students/$id': typeof AuthenticatedStudentDetailRoute
+  '/events/$id': typeof AuthenticatedEventDetailRoute
   '/vendors': typeof AuthenticatedVendorsRoute
   '/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -196,13 +236,18 @@ export interface FileRouteTypes {
     | '/signup'
     | '/communities'
     | '/dashboard'
+    | '/chat'
+    | '/notifications'
+    | '/bug-reports'
     | '/events'
+    | '/events/$id'
+    | '/students'
+    | '/students/$id'
     | '/forms'
     | '/graphics'
     | '/inspectors'
     | '/reports'
     | '/staff'
-    | '/students'
     | '/vendors'
     | '/admin/logs'
     | '/admin/users'
@@ -216,13 +261,18 @@ export interface FileRouteTypes {
     | '/signup'
     | '/communities'
     | '/dashboard'
+    | '/chat'
+    | '/notifications'
+    | '/bug-reports'
     | '/events'
+    | '/events/$id'
     | '/forms'
     | '/graphics'
     | '/inspectors'
     | '/reports'
     | '/staff'
     | '/students'
+    | '/students/$id'
     | '/vendors'
     | '/admin/logs'
     | '/admin/users'
@@ -237,13 +287,18 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_authenticated/communities'
     | '/_authenticated/dashboard'
+    | '/_authenticated/chat'
+    | '/_authenticated/notifications'
+    | '/_authenticated/bug-reports'
     | '/_authenticated/events'
+    | '/_authenticated/events/$id'
     | '/_authenticated/forms'
     | '/_authenticated/graphics'
     | '/_authenticated/inspectors'
     | '/_authenticated/reports'
     | '/_authenticated/staff'
     | '/_authenticated/students'
+    | '/_authenticated/students/$id'
     | '/_authenticated/vendors'
     | '/_authenticated/admin/logs'
     | '/_authenticated/admin/users'
