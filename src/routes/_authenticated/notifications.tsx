@@ -1,22 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+const CHANNELS = [
+  { key: "email", label: "דוא""ל" },
+  { key: "sms", label: "SMS" },
+  { key: "push", label: "Push" },
+  { key: "phone", label: "שיחת טלפון" },
+];
+
+const EVENTS = [
+  { key: "events", label: "אירועים" },
+  { key: "messages", label: "הודעות" },
+  { key: "reports", label: "דיווחים" },
+  { key: "graphics", label: "משימות גרפיקה" },
+];
 
 export const Route = createFileRoute("/_authenticated/notifications")({ component: NotificationsPage });
 
 function NotificationsPage() {
   const { user } = useAuth();
   const qc = useQueryClient();
-  const [channels, setChannels] = useState<string>("email");
-  const [notifyOn, setNotifyOn] = useState<string>("[]");
+  const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
+  const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["notifications-settings", user?.id],
     enabled: !!user,
     queryFn: async () => {
@@ -25,7 +38,21 @@ function NotificationsPage() {
     },
   });
 
-  // Realtime: refresh when settings change
+  useEffect(() => {
+    if (data) {
+      setSelectedChannels(data.channels ?? []);
+      setSelectedEvents(data.notify_on ?? []);
+    }
+  }, [data]);
+
+  const summary = useMemo(
+    () => ({
+      channels: selectedChannels.length ? selectedChannels.join(" · ") : "אין ערוצים",
+      events: selectedEvents.length ? selectedEvents.join(" · ") : "אין אירועים",
+    }),
+    [selectedChannels, selectedEvents],
+  );
+
   useEffect(() => {
     const subs: any[] = [];
     try {
@@ -41,25 +68,32 @@ function NotificationsPage() {
           subs.push(s);
         }
       }
-    } catch (err) {}
+    } catch (err) {
+      // ignore realtime errors
+    }
     return () => subs.forEach((s) => { try { if (s?.unsubscribe) s.unsubscribe(); else if ((supabase as any).removeChannel) (supabase as any).removeChannel(s); } catch (_) {} });
   }, [qc, user]);
 
-  useEffect(() => {
-    if (data) {
-      setChannels((data.channels ?? []).join(","));
-      setNotifyOn(JSON.stringify(data.notify_on ?? []));
-    }
-  }, [data]);
+  const toggleChannel = (key: string) => {
+    setSelectedChannels((current) =>
+      current.includes(key) ? current.filter((item) => item !== key) : [...current, key],
+    );
+  };
+
+  const toggleEvent = (key: string) => {
+    setSelectedEvents((current) =>
+      current.includes(key) ? current.filter((item) => item !== key) : [...current, key],
+    );
+  };
 
   const save = async () => {
     if (!user) return;
     const payload = {
       user_id: user.id,
-      channels: channels.split(",").map((s) => s.trim()).filter(Boolean),
-      notify_on: JSON.parse(notifyOn || "[]"),
+      channels: selectedChannels,
+      notify_on: selectedEvents,
     } as any;
-    // upsert behavior
+
     const existing = await supabase.from("notifications_settings").select("id").eq("user_id", user.id).maybeSingle();
     if ((existing as any).data) {
       await supabase.from("notifications_settings").update(payload).eq("user_id", user.id);
@@ -70,22 +104,71 @@ function NotificationsPage() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen">
       <header className="h-16 bg-card border-b flex items-center px-8 sticky top-0 z-10">
-        <h2 className="text-lg font-semibold">הגדרות התראות</h2>
+        <div>
+          <h2 className="text-lg font-semibold">הגדרות התראות</h2>
+          <p className="text-sm text-muted-foreground">בחר ערוצים ואירועים כדי לקבל התראות רלוונטיות למערכת.</p>
+        </div>
       </header>
-      <div className="p-8">
-        <Card className="p-4 space-y-3">
-          <div>
-            <Label>ערוצי התראה (comma separated)</Label>
-            <Input value={channels} onChange={(e) => setChannels(e.target.value)} placeholder="email,sms,push" />
+
+      <div className="p-8 space-y-6">
+        <Card className="p-4 space-y-4">
+          <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+            <div>
+              <h3 className="text-base font-semibold">ערוצי התראה</h3>
+              <p className="text-sm text-muted-foreground">בחר איך תרצה לקבל עדכונים.</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {CHANNELS.map((option) => {
+                  const active = selectedChannels.includes(option.key);
+                  return (
+                    <button
+                      key={option.key}
+                      type="button"
+                      onClick={() => toggleChannel(option.key)}
+                      className={`rounded-full border px-3 py-2 text-sm transition ${active ? 'border-transparent bg-primary text-primary-foreground' : 'border-white/10 bg-white/5 text-white/80 hover:border-white/20'}`}
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-base font-semibold">אירועים</h3>
+              <p className="text-sm text-muted-foreground">הגדר באילו סוגי אירועים תקבל התראה.</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {EVENTS.map((option) => {
+                  const active = selectedEvents.includes(option.key);
+                  return (
+                    <button
+                      key={option.key}
+                      type="button"
+                      onClick={() => toggleEvent(option.key)}
+                      className={`rounded-full border px-3 py-2 text-sm transition ${active ? 'border-transparent bg-secondary text-secondary-foreground' : 'border-white/10 bg-white/5 text-white/80 hover:border-white/20'}`}
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-          <div>
-            <Label>אירועים להתראה (JSON array)</Label>
-            <Input value={notifyOn} onChange={(e) => setNotifyOn(e.target.value)} placeholder='["events","messages"]' />
+
+          <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+            <div className="rounded-xl border border-white/10 bg-slate-950/80 p-4">
+              <div className="text-sm text-muted-foreground">ערוצים נבחרים</div>
+              <div className="mt-2 min-h-[40px] text-sm">{summary.channels}</div>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-slate-950/80 p-4">
+              <div className="text-sm text-muted-foreground">אירועים נבחרים</div>
+              <div className="mt-2 min-h-[40px] text-sm">{summary.events}</div>
+            </div>
           </div>
-          <div>
-            <Button onClick={save}>שמור</Button>
+
+          <div className="flex justify-end">
+            <Button onClick={save} disabled={isLoading}>שמור הגדרות</Button>
           </div>
         </Card>
       </div>

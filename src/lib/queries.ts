@@ -7,7 +7,8 @@ type TableName =
   | "vendors" | "districts" | "cities" | "communities" | "yeshivas"
   | "form_definitions" | "form_fields" | "form_submissions"
   | "webhook_endpoints" | "webhook_log" | "audit_log" | "user_roles" | "profiles"
-  | "event_expense_items" | "staff_contracts" | "graphics_revisions";
+  | "event_expense_items" | "staff_contracts" | "graphics_revisions"
+  | "chat_messages" | "notifications_settings" | "bug_reports";
 
 export function useList<T = Record<string, unknown>>(table: TableName, opts?: { orderBy?: string; ascending?: boolean; select?: string }) {
   return useQuery({
