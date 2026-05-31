@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RequireModule } from "@/components/require-module";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit2 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -11,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 
 type Row = { id: string; serial_number: number; title: string; event_type: string; status: string; start_at: string; end_at: string | null; expected_participants: number | null; actual_participants: number | null; total_budget_requested: number | null; total_budget_approved: number | null };
 
-export const Route = createFileRoute("/_authenticated/events")({ component: EventsPage });
+export const Route = createFileRoute("/_authenticated/events")({ component: () => <RequireModule module="events"><EventsPage /></RequireModule> });
 
 function EventsPage() {
   const { data: rows } = useList<Row>("events", { orderBy: "start_at" });

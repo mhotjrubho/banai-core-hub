@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RequireModule } from "@/components/require-module";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
@@ -7,7 +8,7 @@ import { downloadXLSX, downloadCSV } from "@/lib/csv";
 import { ROLE_LABELS, EVENT_STATUS_LABELS, GRAPHICS_STATUS_LABELS, formatDate, formatDateTime } from "@/lib/format";
 import { FileSpreadsheet, FileText } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/reports")({ component: ReportsPage });
+export const Route = createFileRoute("/_authenticated/reports")({ component: () => <RequireModule module="reports"><ReportsPage /></RequireModule> });
 
 function ReportsPage() {
   const { data: students } = useList<Record<string, unknown>>("students");

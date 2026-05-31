@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RequireModule } from "@/components/require-module";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit2, Copy } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -9,7 +10,7 @@ import { useList, useUpsert, useDelete } from "@/lib/queries";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/admin/webhooks")({ component: WebhooksPage });
+export const Route = createFileRoute("/_authenticated/admin/webhooks")({ component: () => <RequireModule module="admin_webhooks"><WebhooksPage /></RequireModule> });
 
 type Row = { id: string; name: string; source: string; description: string | null; target_table: string | null; field_mapping: Record<string, string>; secret_key: string | null; is_active: boolean; notify_on_failure: boolean };
 

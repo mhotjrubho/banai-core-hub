@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RequireModule } from "@/components/require-module";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit2 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -10,7 +11,7 @@ import { formatDate, formatCurrency } from "@/lib/format";
 
 type Row = { id: string; name: string; vendor_type: string; contact_name: string | null; phone: string | null; email: string | null; rate: number | null; rate_unit: string | null; insurance_valid_until: string | null; safety_approval_valid_until: string | null; is_active: boolean };
 
-export const Route = createFileRoute("/_authenticated/vendors")({ component: VendorsPage });
+export const Route = createFileRoute("/_authenticated/vendors")({ component: () => <RequireModule module="vendors"><VendorsPage /></RequireModule> });
 
 function VendorsPage() {
   const { data: rows } = useList<Row>("vendors", { orderBy: "name", ascending: true });

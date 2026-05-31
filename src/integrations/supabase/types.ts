@@ -678,9 +678,11 @@ export type Database = {
           community_id: string | null
           created_at: string
           district_id: string | null
+          email: string | null
           full_name: string | null
           id: string
           is_active: boolean
+          national_id: string | null
           phone: string | null
           scope_level: Database["public"]["Enums"]["scope_level"]
           updated_at: string
@@ -691,9 +693,11 @@ export type Database = {
           community_id?: string | null
           created_at?: string
           district_id?: string | null
+          email?: string | null
           full_name?: string | null
           id?: string
           is_active?: boolean
+          national_id?: string | null
           phone?: string | null
           scope_level?: Database["public"]["Enums"]["scope_level"]
           updated_at?: string
@@ -704,9 +708,11 @@ export type Database = {
           community_id?: string | null
           created_at?: string
           district_id?: string | null
+          email?: string | null
           full_name?: string | null
           id?: string
           is_active?: boolean
+          national_id?: string | null
           phone?: string | null
           scope_level?: Database["public"]["Enums"]["scope_level"]
           updated_at?: string
@@ -1227,6 +1233,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_user_roles: { Args: { _user_id: string }; Returns: string[] }
       has_any_role: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
@@ -1250,6 +1257,9 @@ export type Database = {
         | "designer"
         | "inspector"
         | "developer"
+        | "ceo"
+        | "employee"
+        | "student"
       event_status:
         | "draft"
         | "requested"
@@ -1434,6 +1444,9 @@ export const Constants = {
         "designer",
         "inspector",
         "developer",
+        "ceo",
+        "employee",
+        "student",
       ],
       event_status: [
         "draft",

@@ -3,9 +3,10 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
 export type AppRole =
-  | "super_admin" | "finance" | "secretary" | "district_head"
+  | "super_admin" | "ceo" | "finance" | "secretary" | "district_head"
   | "city_coordinator" | "community_coordinator" | "field_coordinator"
-  | "trip_coordinator" | "designer" | "inspector" | "developer";
+  | "trip_coordinator" | "designer" | "inspector" | "developer"
+  | "employee" | "student";
 
 export interface Profile {
   id: string;

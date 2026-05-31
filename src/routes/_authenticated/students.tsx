@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RequireModule } from "@/components/require-module";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Edit2 } from "lucide-react";
@@ -12,7 +13,7 @@ import { downloadXLSX } from "@/lib/csv";
 
 type Row = { id: string; first_name: string; last_name: string; national_id: string | null; phone: string | null; parent1_phone: string | null; parent2_phone: string | null; shiur: string | null; community_id: string | null; yeshiva_id: string | null; smart_card_status: string; is_active: boolean };
 
-export const Route = createFileRoute("/_authenticated/students")({ component: StudentsPage });
+export const Route = createFileRoute("/_authenticated/students")({ component: () => <RequireModule module="students"><StudentsPage /></RequireModule> });
 
 function StudentsPage() {
   const [q, setQ] = useState("");

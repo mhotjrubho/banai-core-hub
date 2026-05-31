@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RequireModule } from "@/components/require-module";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit2 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -9,7 +10,7 @@ import { useList, useUpsert, useDelete } from "@/lib/queries";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export const Route = createFileRoute("/_authenticated/communities")({ component: GeoPage });
+export const Route = createFileRoute("/_authenticated/communities")({ component: () => <RequireModule module="geography"><GeoPage /></RequireModule> });
 
 type District = { id: string; name: string; notes: string | null };
 type City = { id: string; name: string; district_id: string };

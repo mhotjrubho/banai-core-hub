@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RequireModule } from "@/components/require-module";
 import { Button } from "@/components/ui/button";
 import { Plus, Edit2 } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
@@ -10,7 +11,7 @@ import { formatDate } from "@/lib/format";
 
 type Row = { id: string; visit_date: string; visit_time: string | null; expected_participants: number | null; actual_participants: number; rating: number | null; experience_summary: string | null };
 
-export const Route = createFileRoute("/_authenticated/inspectors")({ component: InspectorsPage });
+export const Route = createFileRoute("/_authenticated/inspectors")({ component: () => <RequireModule module="inspectors"><InspectorsPage /></RequireModule> });
 
 function InspectorsPage() {
   const { data: rows } = useList<Row>("inspector_reports", { orderBy: "visit_date" });
