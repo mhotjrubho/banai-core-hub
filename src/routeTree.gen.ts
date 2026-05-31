@@ -17,6 +17,7 @@ import { Route as AuthenticatedVendorsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedStudentsRouteImport } from './routes/_authenticated/students'
 import { Route as AuthenticatedStaffRouteImport } from './routes/_authenticated/staff'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedInspectorsRouteImport } from './routes/_authenticated/inspectors'
 import { Route as AuthenticatedGraphicsRouteImport } from './routes/_authenticated/graphics'
 import { Route as AuthenticatedFormsRouteImport } from './routes/_authenticated/forms'
@@ -24,11 +25,10 @@ import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCommunitiesRouteImport } from './routes/_authenticated/communities'
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
-import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
-import { Route as AuthenticatedBugReportsRouteImport } from './routes/_authenticated/bug_reports'
-import { Route as AuthenticatedStudentDetailRouteImport } from './routes/_authenticated/students.$id'
-import { Route as AuthenticatedEventDetailRouteImport } from './routes/_authenticated/events.$id'
+import { Route as AuthenticatedBug_reportsRouteImport } from './routes/_authenticated/bug_reports'
 import { Route as FormsPTokenRouteImport } from './routes/forms.p.$token'
+import { Route as AuthenticatedStudentsIdRouteImport } from './routes/_authenticated/students.$id'
+import { Route as AuthenticatedEventsIdRouteImport } from './routes/_authenticated/events.$id'
 import { Route as AuthenticatedAdminWebhooksRouteImport } from './routes/_authenticated/admin.webhooks'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminLogsRouteImport } from './routes/_authenticated/admin.logs'
@@ -73,6 +73,12 @@ const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedInspectorsRoute = AuthenticatedInspectorsRouteImport.update({
   id: '/inspectors',
   path: '/inspectors',
@@ -93,31 +99,6 @@ const AuthenticatedEventsRoute = AuthenticatedEventsRouteImport.update({
   path: '/events',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedNotificationsRoute = AuthenticatedNotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedBugReportsRoute = AuthenticatedBugReportsRouteImport.update({
-  id: '/bug-reports',
-  path: '/bug-reports',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedStudentDetailRoute = AuthenticatedStudentDetailRouteImport.update({
-  id: '/students/$id',
-  path: '/students/$id',
-  getParentRoute: () => AuthenticatedStudentsRoute,
-} as any)
-const AuthenticatedEventDetailRoute = AuthenticatedEventDetailRouteImport.update({
-  id: '/events/$id',
-  path: '/events/$id',
-  getParentRoute: () => AuthenticatedEventsRoute,
-} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -129,10 +110,31 @@ const AuthenticatedCommunitiesRoute =
     path: '/communities',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedBug_reportsRoute =
+  AuthenticatedBug_reportsRouteImport.update({
+    id: '/bug_reports',
+    path: '/bug_reports',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const FormsPTokenRoute = FormsPTokenRouteImport.update({
   id: '/forms/p/$token',
   path: '/forms/p/$token',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedStudentsIdRoute = AuthenticatedStudentsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedStudentsRoute,
+} as any)
+const AuthenticatedEventsIdRoute = AuthenticatedEventsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedEventsRoute,
 } as any)
 const AuthenticatedAdminWebhooksRoute =
   AuthenticatedAdminWebhooksRouteImport.update({
@@ -160,24 +162,24 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/bug_reports': typeof AuthenticatedBug_reportsRoute
+  '/chat': typeof AuthenticatedChatRoute
   '/communities': typeof AuthenticatedCommunitiesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/chat': typeof AuthenticatedChatRoute
-  '/notifications': typeof AuthenticatedNotificationsRoute
-  '/bug-reports': typeof AuthenticatedBugReportsRoute
-  '/events': typeof AuthenticatedEventsRoute
+  '/events': typeof AuthenticatedEventsRouteWithChildren
   '/forms': typeof AuthenticatedFormsRoute
   '/graphics': typeof AuthenticatedGraphicsRoute
   '/inspectors': typeof AuthenticatedInspectorsRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/staff': typeof AuthenticatedStaffRoute
-  '/students': typeof AuthenticatedStudentsRoute
-  '/students/$id': typeof AuthenticatedStudentDetailRoute
-  '/events/$id': typeof AuthenticatedEventDetailRoute
+  '/students': typeof AuthenticatedStudentsRouteWithChildren
   '/vendors': typeof AuthenticatedVendorsRoute
   '/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
+  '/events/$id': typeof AuthenticatedEventsIdRoute
+  '/students/$id': typeof AuthenticatedStudentsIdRoute
   '/forms/p/$token': typeof FormsPTokenRoute
   '/api/public/forms/$token': typeof ApiPublicFormsTokenRoute
 }
@@ -185,24 +187,24 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/bug_reports': typeof AuthenticatedBug_reportsRoute
+  '/chat': typeof AuthenticatedChatRoute
   '/communities': typeof AuthenticatedCommunitiesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/chat': typeof AuthenticatedChatRoute
-  '/notifications': typeof AuthenticatedNotificationsRoute
-  '/bug-reports': typeof AuthenticatedBugReportsRoute
-  '/events': typeof AuthenticatedEventsRoute
+  '/events': typeof AuthenticatedEventsRouteWithChildren
   '/forms': typeof AuthenticatedFormsRoute
   '/graphics': typeof AuthenticatedGraphicsRoute
   '/inspectors': typeof AuthenticatedInspectorsRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/staff': typeof AuthenticatedStaffRoute
-  '/students': typeof AuthenticatedStudentsRoute
-  '/students/$id': typeof AuthenticatedStudentDetailRoute
-  '/events/$id': typeof AuthenticatedEventDetailRoute
+  '/students': typeof AuthenticatedStudentsRouteWithChildren
   '/vendors': typeof AuthenticatedVendorsRoute
   '/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
+  '/events/$id': typeof AuthenticatedEventsIdRoute
+  '/students/$id': typeof AuthenticatedStudentsIdRoute
   '/forms/p/$token': typeof FormsPTokenRoute
   '/api/public/forms/$token': typeof ApiPublicFormsTokenRoute
 }
@@ -212,19 +214,24 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/_authenticated/bug_reports': typeof AuthenticatedBug_reportsRoute
+  '/_authenticated/chat': typeof AuthenticatedChatRoute
   '/_authenticated/communities': typeof AuthenticatedCommunitiesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/events': typeof AuthenticatedEventsRoute
+  '/_authenticated/events': typeof AuthenticatedEventsRouteWithChildren
   '/_authenticated/forms': typeof AuthenticatedFormsRoute
   '/_authenticated/graphics': typeof AuthenticatedGraphicsRoute
   '/_authenticated/inspectors': typeof AuthenticatedInspectorsRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/staff': typeof AuthenticatedStaffRoute
-  '/_authenticated/students': typeof AuthenticatedStudentsRoute
+  '/_authenticated/students': typeof AuthenticatedStudentsRouteWithChildren
   '/_authenticated/vendors': typeof AuthenticatedVendorsRoute
   '/_authenticated/admin/logs': typeof AuthenticatedAdminLogsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/admin/webhooks': typeof AuthenticatedAdminWebhooksRoute
+  '/_authenticated/events/$id': typeof AuthenticatedEventsIdRoute
+  '/_authenticated/students/$id': typeof AuthenticatedStudentsIdRoute
   '/forms/p/$token': typeof FormsPTokenRoute
   '/api/public/forms/$token': typeof ApiPublicFormsTokenRoute
 }
@@ -234,24 +241,24 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/bug_reports'
+    | '/chat'
     | '/communities'
     | '/dashboard'
-    | '/chat'
-    | '/notifications'
-    | '/bug-reports'
     | '/events'
-    | '/events/$id'
-    | '/students'
-    | '/students/$id'
     | '/forms'
     | '/graphics'
     | '/inspectors'
+    | '/notifications'
     | '/reports'
     | '/staff'
+    | '/students'
     | '/vendors'
     | '/admin/logs'
     | '/admin/users'
     | '/admin/webhooks'
+    | '/events/$id'
+    | '/students/$id'
     | '/forms/p/$token'
     | '/api/public/forms/$token'
   fileRoutesByTo: FileRoutesByTo
@@ -259,24 +266,24 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/bug_reports'
+    | '/chat'
     | '/communities'
     | '/dashboard'
-    | '/chat'
-    | '/notifications'
-    | '/bug-reports'
     | '/events'
-    | '/events/$id'
     | '/forms'
     | '/graphics'
     | '/inspectors'
+    | '/notifications'
     | '/reports'
     | '/staff'
     | '/students'
-    | '/students/$id'
     | '/vendors'
     | '/admin/logs'
     | '/admin/users'
     | '/admin/webhooks'
+    | '/events/$id'
+    | '/students/$id'
     | '/forms/p/$token'
     | '/api/public/forms/$token'
   id:
@@ -285,24 +292,24 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/login'
     | '/signup'
+    | '/_authenticated/bug_reports'
+    | '/_authenticated/chat'
     | '/_authenticated/communities'
     | '/_authenticated/dashboard'
-    | '/_authenticated/chat'
-    | '/_authenticated/notifications'
-    | '/_authenticated/bug-reports'
     | '/_authenticated/events'
-    | '/_authenticated/events/$id'
     | '/_authenticated/forms'
     | '/_authenticated/graphics'
     | '/_authenticated/inspectors'
+    | '/_authenticated/notifications'
     | '/_authenticated/reports'
     | '/_authenticated/staff'
     | '/_authenticated/students'
-    | '/_authenticated/students/$id'
     | '/_authenticated/vendors'
     | '/_authenticated/admin/logs'
     | '/_authenticated/admin/users'
     | '/_authenticated/admin/webhooks'
+    | '/_authenticated/events/$id'
+    | '/_authenticated/students/$id'
     | '/forms/p/$token'
     | '/api/public/forms/$token'
   fileRoutesById: FileRoutesById
@@ -374,6 +381,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/inspectors': {
       id: '/_authenticated/inspectors'
       path: '/inspectors'
@@ -416,12 +430,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCommunitiesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/chat': {
+      id: '/_authenticated/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof AuthenticatedChatRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/bug_reports': {
+      id: '/_authenticated/bug_reports'
+      path: '/bug_reports'
+      fullPath: '/bug_reports'
+      preLoaderRoute: typeof AuthenticatedBug_reportsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/forms/p/$token': {
       id: '/forms/p/$token'
       path: '/forms/p/$token'
       fullPath: '/forms/p/$token'
       preLoaderRoute: typeof FormsPTokenRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/students/$id': {
+      id: '/_authenticated/students/$id'
+      path: '/$id'
+      fullPath: '/students/$id'
+      preLoaderRoute: typeof AuthenticatedStudentsIdRouteImport
+      parentRoute: typeof AuthenticatedStudentsRoute
+    }
+    '/_authenticated/events/$id': {
+      id: '/_authenticated/events/$id'
+      path: '/$id'
+      fullPath: '/events/$id'
+      preLoaderRoute: typeof AuthenticatedEventsIdRouteImport
+      parentRoute: typeof AuthenticatedEventsRoute
     }
     '/_authenticated/admin/webhooks': {
       id: '/_authenticated/admin/webhooks'
@@ -454,16 +496,43 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedEventsRouteChildren {
+  AuthenticatedEventsIdRoute: typeof AuthenticatedEventsIdRoute
+}
+
+const AuthenticatedEventsRouteChildren: AuthenticatedEventsRouteChildren = {
+  AuthenticatedEventsIdRoute: AuthenticatedEventsIdRoute,
+}
+
+const AuthenticatedEventsRouteWithChildren =
+  AuthenticatedEventsRoute._addFileChildren(AuthenticatedEventsRouteChildren)
+
+interface AuthenticatedStudentsRouteChildren {
+  AuthenticatedStudentsIdRoute: typeof AuthenticatedStudentsIdRoute
+}
+
+const AuthenticatedStudentsRouteChildren: AuthenticatedStudentsRouteChildren = {
+  AuthenticatedStudentsIdRoute: AuthenticatedStudentsIdRoute,
+}
+
+const AuthenticatedStudentsRouteWithChildren =
+  AuthenticatedStudentsRoute._addFileChildren(
+    AuthenticatedStudentsRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
+  AuthenticatedBug_reportsRoute: typeof AuthenticatedBug_reportsRoute
+  AuthenticatedChatRoute: typeof AuthenticatedChatRoute
   AuthenticatedCommunitiesRoute: typeof AuthenticatedCommunitiesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
+  AuthenticatedEventsRoute: typeof AuthenticatedEventsRouteWithChildren
   AuthenticatedFormsRoute: typeof AuthenticatedFormsRoute
   AuthenticatedGraphicsRoute: typeof AuthenticatedGraphicsRoute
   AuthenticatedInspectorsRoute: typeof AuthenticatedInspectorsRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedStaffRoute: typeof AuthenticatedStaffRoute
-  AuthenticatedStudentsRoute: typeof AuthenticatedStudentsRoute
+  AuthenticatedStudentsRoute: typeof AuthenticatedStudentsRouteWithChildren
   AuthenticatedVendorsRoute: typeof AuthenticatedVendorsRoute
   AuthenticatedAdminLogsRoute: typeof AuthenticatedAdminLogsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
@@ -471,15 +540,18 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedBug_reportsRoute: AuthenticatedBug_reportsRoute,
+  AuthenticatedChatRoute: AuthenticatedChatRoute,
   AuthenticatedCommunitiesRoute: AuthenticatedCommunitiesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedEventsRoute: AuthenticatedEventsRoute,
+  AuthenticatedEventsRoute: AuthenticatedEventsRouteWithChildren,
   AuthenticatedFormsRoute: AuthenticatedFormsRoute,
   AuthenticatedGraphicsRoute: AuthenticatedGraphicsRoute,
   AuthenticatedInspectorsRoute: AuthenticatedInspectorsRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedStaffRoute: AuthenticatedStaffRoute,
-  AuthenticatedStudentsRoute: AuthenticatedStudentsRoute,
+  AuthenticatedStudentsRoute: AuthenticatedStudentsRouteWithChildren,
   AuthenticatedVendorsRoute: AuthenticatedVendorsRoute,
   AuthenticatedAdminLogsRoute: AuthenticatedAdminLogsRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
@@ -501,3 +573,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -23,7 +23,7 @@ const STATUS_CLASSES: Record<string, string> = {
   closed: 'bg-slate-500/15 text-slate-200 border border-slate-500/20',
 };
 
-export const Route = createFileRoute("/_authenticated/bug-reports")({ component: BugReports });
+export const Route = createFileRoute("/_authenticated/bug_reports")({ component: BugReports });
 
 function BugReports() {
   const { user, isAdmin } = useAuth();
