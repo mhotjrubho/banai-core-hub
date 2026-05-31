@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Card } from "@/components/ui/card";
@@ -9,6 +9,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({ component: D
 
 function Dashboard() {
   const { profile, roles, isAdmin } = useAuth();
+  const qc = useQueryClient();
+  const [liveConnected, setLiveConnected] = useState(false);
 
   const { data: kpis } = useQuery({
     queryKey: ["dashboard-kpis"],
@@ -29,6 +31,46 @@ function Dashboard() {
       };
     },
   });
+
+  // Realtime: invalidate KPIs when core tables change so UI updates quickly
+  useEffect(() => {
+    const tables = ["students", "staff", "events", "graphics_tasks", "inspector_reports"];
+    const subs: any[] = [];
+    try {
+      // Newer supabase-js uses channels
+      if ((supabase as any).channel) {
+        tables.forEach((t) => {
+          const ch = (supabase as any)
+            .channel(`public:${t}`)
+            .on('postgres_changes', { event: '*', schema: 'public', table: t }, () => qc.invalidateQueries(['dashboard-kpis']))
+            .subscribe();
+          subs.push(ch);
+        });
+        if (tables.length > 0) setLiveConnected(true);
+      } else if ((supabase as any).from) {
+        // Fallback older API
+        tables.forEach((t) => {
+          const s = (supabase as any).from(t).on('*', () => qc.invalidateQueries(['dashboard-kpis'])).subscribe();
+          subs.push(s);
+        });
+        if (tables.length > 0) setLiveConnected(true);
+      }
+    } catch (err) {
+      // Non-fatal: if realtime isn't available, dashboard still works via polling
+      // eslint-disable-next-line no-console
+      console.warn('Supabase realtime subscription failed', err);
+    }
+
+    return () => {
+      subs.forEach((s) => {
+        try {
+          if (s?.unsubscribe) s.unsubscribe();
+          else if ((supabase as any).removeChannel) (supabase as any).removeChannel(s);
+        } catch (_) {}
+      });
+      setLiveConnected(false);
+    };
+  }, [qc]);
 
   return (
     <div>
