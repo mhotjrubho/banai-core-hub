@@ -15,7 +15,15 @@ function createSupabaseClient() {
     ];
     const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud.`;
     console.error(`[Supabase] ${message}`);
-    throw new Error(message);
+    // During SSR or local dev it's better not to throw at module import time
+    // to avoid completely crashing the app. Return a lazy proxy that will
+    // throw a clear error when any Supabase method is actually accessed.
+    const errorProxy = new Proxy({}, {
+      get() {
+        throw new Error(`${message} Supabase client not initialized.`);
+      }
+    }) as unknown as ReturnType<typeof createSupabaseClient>;
+    return errorProxy;
   }
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
