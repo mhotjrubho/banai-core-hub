@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
@@ -69,7 +69,7 @@ function ChatPage() {
   const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
 
-  const handleSend = async (e: React.FormEvent) => {
+  const handleSend = async (e: FormEvent) => {
     e.preventDefault();
     if (!user || !content.trim()) return;
     setSending(true);
@@ -132,7 +132,7 @@ function ChatPage() {
                 className="min-h-[120px]"
               />
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="text-sm text-muted-foreground">הודעה תישמר ותשלח לכל התמונות שנבחרו.</span>
+                <span className="text-sm text-muted-foreground">הודעה תישלח לנמענים הנבחרים.</span>
                 <Button type="submit" disabled={sending || !content.trim()}>שלח הודעה</Button>
               </div>
             </div>
