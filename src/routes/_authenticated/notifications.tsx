@@ -47,8 +47,16 @@ function NotificationsPage() {
 
   const summary = useMemo(
     () => ({
-      channels: selectedChannels.length ? selectedChannels.join(" · ") : "אין ערוצים",
-      events: selectedEvents.length ? selectedEvents.join(" · ") : "אין אירועים",
+      channels: selectedChannels.length
+        ? selectedChannels
+            .map((key) => CHANNELS.find((option) => option.key === key)?.label ?? key)
+            .join(" · ")
+        : "אין ערוצים",
+      events: selectedEvents.length
+        ? selectedEvents
+            .map((key) => EVENTS.find((option) => option.key === key)?.label ?? key)
+            .join(" · ")
+        : "אין אירועים",
     }),
     [selectedChannels, selectedEvents],
   );
