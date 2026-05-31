@@ -21,6 +21,15 @@ function ChatPage() {
     },
   });
 
+  const { data: profiles } = useQuery({
+    queryKey: ["profiles-list"],
+    queryFn: async () => {
+      const { data } = await supabase.from("profiles").select("user_id,full_name").order("full_name", { ascending: true });
+      return data ?? [];
+    },
+  });
+  const profilesMap = (profiles ?? []).reduce((acc: any, p: any) => ({ ...acc, [p.user_id]: p.full_name ?? p.user_id }), {} as Record<string, string>);
+
   // Realtime subscribe to new chat messages
   useEffect(() => {
     const subs: any[] = [];
@@ -62,6 +71,11 @@ function ChatPage() {
     qc.invalidateQueries(["chat-messages"]);
   };
 
+  const markAsRead = async (id: string) => {
+    await supabase.from('chat_messages').update({ is_read: true }).eq('id', id);
+    qc.invalidateQueries(['chat-messages']);
+  };
+
   return (
     <div>
       <header className="h-16 bg-card border-b flex items-center px-8 sticky top-0 z-10">
@@ -71,8 +85,13 @@ function ChatPage() {
         <Card className="p-4">
           <form onSubmit={handleSend} className="space-y-3">
             <div>
-              <Label>אל (user_id)</Label>
-              <Input value={recipient} onChange={(e) => setRecipient(e.target.value)} placeholder="מזהה משתמש או ריק לכולם" />
+              <Label>אל (בחר משתמש)</Label>
+              <select value={recipient} onChange={(e) => setRecipient(e.target.value)} className="w-full rounded-md border px-2 py-1">
+                <option value="">--- לכולם ---</option>
+                {(profiles ?? []).map((p: any) => (
+                  <option key={p.user_id} value={p.user_id}>{p.full_name ?? p.user_id}</option>
+                ))}
+              </select>
             </div>
             <div>
               <Label>הודעה</Label>
@@ -87,7 +106,14 @@ function ChatPage() {
         <section className="space-y-3">
           {(data ?? []).map((m: any) => (
             <Card key={m.id} className="p-3">
-              <div className="text-sm text-muted-foreground">{m.sender_id} → {m.recipient_id ?? 'כולם'} · {new Date(m.created_at).toLocaleString()}</div>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted-foreground">{profilesMap[m.sender_id] ?? m.sender_id} → {m.recipient_id ? (profilesMap[m.recipient_id] ?? m.recipient_id) : 'כולם'} · {new Date(m.created_at).toLocaleString()}</div>
+                <div>
+                  {!m.is_read && (
+                    <button onClick={() => markAsRead(m.id)} className="text-xs text-blue-500 hover:underline">סמן כנראה קריא</button>
+                  )}
+                </div>
+              </div>
               <div className="mt-1">{m.content}</div>
             </Card>
           ))}

@@ -22,6 +22,14 @@ function BugReports() {
     },
   });
 
+  const { data: profiles } = useQuery({
+    queryKey: ['profiles-list-for-assign'],
+    queryFn: async () => {
+      const { data } = await supabase.from('profiles').select('user_id,full_name').order('full_name', { ascending: true });
+      return data ?? [];
+    },
+  });
+
   // Realtime subscribe to bug_reports changes
   useEffect(() => {
     const subs: any[] = [];
@@ -60,6 +68,11 @@ function BugReports() {
     qc.invalidateQueries(["bug-reports"]);
   };
 
+  const updateReport = async (id: string, patch: any) => {
+    await supabase.from('bug_reports').update(patch).eq('id', id);
+    qc.invalidateQueries(['bug-reports']);
+  };
+
   return (
     <div>
       <header className="h-16 bg-card border-b flex items-center px-8 sticky top-0 z-10">
@@ -85,7 +98,28 @@ function BugReports() {
         <section className="space-y-3">
           {(data ?? []).map((b: any) => (
             <Card key={b.id} className="p-3">
-              <div className="text-sm text-muted-foreground">{b.title} · {b.status} · {new Date(b.created_at).toLocaleString()}</div>
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted-foreground">{b.title} · {b.status} · {new Date(b.created_at).toLocaleString()}</div>
+                <div className="flex items-center gap-2">
+                  {/* assign / status controls for admins */}
+                  { (useAuth().isAdmin) && (
+                    <>
+                      <select value={b.status} onChange={(e) => updateReport(b.id, { status: e.target.value })} className="rounded-md border px-2 py-1 text-sm">
+                        <option value="open">open</option>
+                        <option value="in_progress">in_progress</option>
+                        <option value="resolved">resolved</option>
+                        <option value="closed">closed</option>
+                      </select>
+                      <select value={b.assigned_to ?? ''} onChange={(e) => updateReport(b.id, { assigned_to: e.target.value || null })} className="rounded-md border px-2 py-1 text-sm">
+                        <option value="">-- לא מוקצה --</option>
+                        {(profiles ?? []).map((p: any) => (
+                          <option key={p.user_id} value={p.user_id}>{p.full_name ?? p.user_id}</option>
+                        ))}
+                      </select>
+                    </>
+                  )}
+                </div>
+              </div>
               <div className="mt-1">{b.description}</div>
             </Card>
           ))}
