@@ -11,19 +11,7 @@ export const formatDateTime = (d: string | Date | null | undefined) => {
   return new Intl.DateTimeFormat("he-IL", { dateStyle: "short", timeStyle: "short" }).format(new Date(d));
 };
 
-export const ROLE_LABELS: Record<string, string> = {
-  super_admin: "מנהל-על",
-  finance: "כספים",
-  secretary: "מזכירות",
-  district_head: "ראש מחוז",
-  city_coordinator: "רכז עיר",
-  community_coordinator: "רכז קהילה",
-  field_coordinator: "רכז שטח",
-  trip_coordinator: "רכז טיולים",
-  designer: "גרפיקאי",
-  inspector: "בקר",
-  developer: "מתכנת",
-};
+export { ROLE_LABELS } from "./permissions";
 
 export const EVENT_STATUS_LABELS: Record<string, string> = {
   draft: "טיוטה",
