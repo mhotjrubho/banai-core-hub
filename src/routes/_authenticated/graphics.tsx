@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { RequireModule } from "@/components/require-module";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit2 } from "lucide-react";
+import { Plus, Edit2, FolderOpen } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { DataTable } from "@/components/data-table";
 import { CrudDialog } from "@/components/crud-dialog";
 import { ConfirmDelete } from "@/components/confirm-delete";
+import { GraphicsTaskDetails } from "@/components/graphics-task-details";
 import { useList, useUpsert, useDelete } from "@/lib/queries";
 import { GRAPHICS_STATUS_LABELS, formatDateTime } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
