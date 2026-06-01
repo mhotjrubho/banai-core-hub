@@ -194,7 +194,7 @@ function ImportPage() {
 
   return (
     <div>
-      <PageHeader title="ייבוא מאקסל" subtitle="העלה קובץ אקסל, בחר טבלת יעד והתאם עמודות" />
+      <PageHeader title="ייבוא מאקסל" />
       <div className="p-8 max-w-5xl">
         {step === "select-target" && (
           <Card className="p-6">
