@@ -38,7 +38,7 @@ function LogsPage() {
             </TabsList>
             <TabsContent value="audit" className="mt-4">
               <div className="border rounded-md divide-y max-h-[600px] overflow-y-auto">
-                {(audit ?? []).map((a) => (
+                {(audit ?? []).map((a: any) => (
                   <div key={a.id} className="p-3 text-xs flex items-center justify-between">
                     <div>
                       <span className="font-semibold">{a.action}</span> על <span className="font-mono">{a.entity_type}</span>
@@ -52,7 +52,7 @@ function LogsPage() {
             </TabsContent>
             <TabsContent value="webhooks" className="mt-4">
               <div className="border rounded-md divide-y max-h-[600px] overflow-y-auto">
-                {(webhooks ?? []).map((w) => (
+                {(webhooks ?? []).map((w: any) => (
                   <div key={w.id} className="p-3 text-xs">
                     <div className="flex items-center justify-between mb-1">
                       <div className="flex items-center gap-2">
