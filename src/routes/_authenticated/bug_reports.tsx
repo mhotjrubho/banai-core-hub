@@ -124,7 +124,7 @@ function BugReports() {
               {Object.entries(summary).map(([status, count]) => (
                 <div key={status} className="rounded-2xl border border-white/10 bg-slate-950/80 p-3">
                   <div className="text-sm text-muted-foreground">{STATUS_LABELS[status] ?? status}</div>
-                  <div className="mt-2 text-2xl font-semibold">{count}</div>
+                  <div className="mt-2 text-2xl font-semibold">{count as number}</div>
                 </div>
               ))}
             </div>
