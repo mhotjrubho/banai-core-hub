@@ -56,6 +56,84 @@ export type Database = {
         }
         Relationships: []
       }
+      bug_reports: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          description: string | null
+          id: string
+          priority: string | null
+          reporter_id: string | null
+          resolution_notes: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          priority?: string | null
+          reporter_id?: string | null
+          resolution_notes?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          priority?: string | null
+          reporter_id?: string | null
+          resolution_notes?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          channel: string
+          channel_id: string | null
+          content: string
+          created_at: string
+          id: string
+          is_read: boolean
+          metadata: Json | null
+          recipient_id: string | null
+          sender_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          channel?: string
+          channel_id?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          metadata?: Json | null
+          recipient_id?: string | null
+          sender_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          channel?: string
+          channel_id?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          metadata?: Json | null
+          recipient_id?: string | null
+          sender_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       cities: {
         Row: {
           created_at: string
@@ -445,6 +523,85 @@ export type Database = {
           },
         ]
       }
+      graphics_comments: {
+        Row: {
+          author_id: string | null
+          body: string
+          created_at: string
+          id: string
+          task_id: string
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          task_id: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          task_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "graphics_comments_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "graphics_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      graphics_files: {
+        Row: {
+          created_at: string
+          file_name: string | null
+          file_path: string
+          id: string
+          mime_type: string | null
+          notes: string | null
+          platform: string
+          size_bytes: number | null
+          task_id: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          file_name?: string | null
+          file_path: string
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          platform?: string
+          size_bytes?: number | null
+          task_id: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          file_name?: string | null
+          file_path?: string
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          platform?: string
+          size_bytes?: number | null
+          task_id?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "graphics_files_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "graphics_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       graphics_revisions: {
         Row: {
           created_at: string
@@ -647,6 +804,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notifications_settings: {
+        Row: {
+          channels: string[] | null
+          created_at: string
+          id: string
+          is_enabled: boolean
+          notify_on: Json | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          channels?: string[] | null
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          notify_on?: Json | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          channels?: string[] | null
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          notify_on?: Json | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       permissions: {
         Row: {
@@ -1183,131 +1370,6 @@ export type Database = {
           success?: boolean
         }
         Relationships: []
-      }
-      chat_messages: {
-        Row: {
-          content: string
-          created_at: string
-          id: string
-          is_read: boolean
-          recipient_id: string | null
-          sender_id: string
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          id?: string
-          is_read?: boolean
-          recipient_id?: string | null
-          sender_id: string
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          id?: string
-          is_read?: boolean
-          recipient_id?: string | null
-          sender_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chat_messages_recipient_id_fkey"
-            columns: ["recipient_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "chat_messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["user_id"]
-          },
-        ]
-      }
-      notifications_settings: {
-        Row: {
-          channels: string[]
-          created_at: string
-          id: string
-          notify_on: string[]
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          channels: string[]
-          created_at?: string
-          id?: string
-          notify_on: string[]
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          channels?: string[]
-          created_at?: string
-          id?: string
-          notify_on?: string[]
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "notifications_settings_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["user_id"]
-          },
-        ]
-      }
-      bug_reports: {
-        Row: {
-          assigned_to: string | null
-          created_at: string
-          description: string
-          id: string
-          reporter_id: string | null
-          status: string
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          assigned_to?: string | null
-          created_at?: string
-          description: string
-          id?: string
-          reporter_id?: string | null
-          status?: string
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          assigned_to?: string | null
-          created_at?: string
-          description?: string
-          id?: string
-          reporter_id?: string | null
-          status?: string
-          title?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "bug_reports_assigned_to_fkey"
-            columns: ["assigned_to"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "bug_reports_reporter_id_fkey"
-            columns: ["reporter_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["user_id"]
-          },
-        ]
       }
       yeshivas: {
         Row: {

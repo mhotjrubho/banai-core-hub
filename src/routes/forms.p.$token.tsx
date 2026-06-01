@@ -57,7 +57,7 @@ function PublicForm() {
         <h1 className="text-2xl font-bold mb-2">{data.form.name}</h1>
         {data.form.description && <p className="text-sm text-muted-foreground mb-6">{data.form.description}</p>}
         <form onSubmit={submit} className="space-y-4">
-          {data.fields.map((f) => (
+          {data.fields.map((f: any) => (
             <div key={f.id}>
               <Label className="mb-1 block text-sm">{f.label} {f.is_required && <span className="text-destructive">*</span>}</Label>
               {f.field_type === "textarea" ? (

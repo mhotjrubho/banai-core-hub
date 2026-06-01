@@ -40,8 +40,8 @@ function NotificationsPage() {
 
   useEffect(() => {
     if (data) {
-      setSelectedChannels(data.channels ?? []);
-      setSelectedEvents(data.notify_on ?? []);
+      setSelectedChannels(((data as any).channels ?? []) as string[]);
+      setSelectedEvents((((data as any).notify_on ?? []) as string[]));
     }
   }, [data]);
 
@@ -68,11 +68,11 @@ function NotificationsPage() {
         if ((supabase as any).channel) {
           const ch = (supabase as any)
             .channel('public:notifications_settings')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications_settings', filter: `user_id=eq.${user.id}` }, () => qc.invalidateQueries(["notifications-settings", user.id]))
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications_settings', filter: `user_id=eq.${user.id}` }, () => qc.invalidateQueries({ queryKey: ["notifications-settings", user.id] }))
             .subscribe();
           subs.push(ch);
         } else if ((supabase as any).from) {
-          const s = (supabase as any).from(`notifications_settings:user_id=eq.${user.id}`).on('*', () => qc.invalidateQueries(["notifications-settings", user.id])).subscribe();
+          const s = (supabase as any).from(`notifications_settings:user_id=eq.${user.id}`).on('*', () => qc.invalidateQueries({ queryKey: ["notifications-settings", user.id] })).subscribe();
           subs.push(s);
         }
       }
@@ -108,7 +108,7 @@ function NotificationsPage() {
     } else {
       await supabase.from("notifications_settings").insert(payload);
     }
-    qc.invalidateQueries(["notifications-settings", user.id]);
+    qc.invalidateQueries({ queryKey: ["notifications-settings", user.id] });
   };
 
   return (

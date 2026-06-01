@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { RequireModule } from "@/components/require-module";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit2 } from "lucide-react";
+import { Plus, Edit2, FolderOpen } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { DataTable } from "@/components/data-table";
 import { CrudDialog } from "@/components/crud-dialog";
 import { ConfirmDelete } from "@/components/confirm-delete";
+import { GraphicsTaskDetails } from "@/components/graphics-task-details";
 import { useList, useUpsert, useDelete } from "@/lib/queries";
 import { GRAPHICS_STATUS_LABELS, formatDateTime } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
@@ -48,6 +49,8 @@ function GraphicsPage() {
           ]}
           actions={(r) => (
             <div className="flex gap-1">
+              <GraphicsTaskDetails taskId={r.id}
+                trigger={<Button size="sm" variant="ghost" title="קבצים ותגובות"><FolderOpen className="size-4" /></Button>} />
               <CrudDialog title="עריכת משימה" fields={fields} initial={r as unknown as Record<string, unknown>} onSubmit={(v) => upsert.mutateAsync(v)}
                 trigger={<Button size="sm" variant="ghost"><Edit2 className="size-4" /></Button>} />
               <ConfirmDelete onConfirm={() => del.mutateAsync(r.id)} />

@@ -45,11 +45,11 @@ function ChatPage() {
       if ((supabase as any).channel) {
         const ch = (supabase as any)
           .channel('public:chat_messages')
-          .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages' }, () => qc.invalidateQueries(['chat-messages']))
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages' }, () => qc.invalidateQueries({ queryKey: ['chat-messages'] }))
           .subscribe();
         subs.push(ch);
       } else if ((supabase as any).from) {
-        const s = (supabase as any).from('chat_messages').on('*', () => qc.invalidateQueries(['chat-messages'])).subscribe();
+        const s = (supabase as any).from('chat_messages').on('*', () => qc.invalidateQueries({ queryKey: ['chat-messages'] })).subscribe();
         subs.push(s);
       }
     } catch (err) {
@@ -77,7 +77,7 @@ function ChatPage() {
       await supabase.from("chat_messages").insert({ sender_id: user.id, recipient_id: recipient || null, content: content.trim() });
       setContent("");
       setRecipient("");
-      qc.invalidateQueries(["chat-messages"]);
+      qc.invalidateQueries({ queryKey: ["chat-messages"] });
     } finally {
       setSending(false);
     }
@@ -85,7 +85,7 @@ function ChatPage() {
 
   const markAsRead = async (id: string) => {
     await supabase.from('chat_messages').update({ is_read: true }).eq('id', id);
-    qc.invalidateQueries(['chat-messages']);
+    qc.invalidateQueries({ queryKey: ['chat-messages'] });
   };
 
   return (
