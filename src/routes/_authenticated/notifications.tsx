@@ -40,8 +40,8 @@ function NotificationsPage() {
 
   useEffect(() => {
     if (data) {
-      setSelectedChannels(data.channels ?? []);
-      setSelectedEvents(data.notify_on ?? []);
+      setSelectedChannels(((data as any).channels ?? []) as string[]);
+      setSelectedEvents((((data as any).notify_on ?? []) as string[]));
     }
   }, [data]);
 
