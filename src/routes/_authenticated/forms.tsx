@@ -191,7 +191,7 @@ function SubmissionsViewer({ formId }: { formId: string }) {
     <div>
       <h4 className="font-semibold text-sm mb-2 flex items-center gap-2"><Eye className="size-4" /> הגשות אחרונות ({subs?.length ?? 0})</h4>
       <div className="border rounded-md divide-y max-h-80 overflow-y-auto">
-        {(subs ?? []).map((s) => (
+        {(subs ?? []).map((s: any) => (
           <div key={s.id} className="p-3 text-xs">
             <div className="text-muted-foreground mb-1">{new Date(s.created_at).toLocaleString("he-IL")} • {s.source}</div>
             <pre className="text-[11px] bg-muted/30 p-2 rounded overflow-x-auto">{JSON.stringify(s.payload, null, 2)}</pre>
