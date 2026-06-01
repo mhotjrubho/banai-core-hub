@@ -55,11 +55,11 @@ function BugReports() {
       if ((supabase as any).channel) {
         const ch = (supabase as any)
           .channel('public:bug_reports')
-          .on('postgres_changes', { event: '*', schema: 'public', table: 'bug_reports' }, () => qc.invalidateQueries(['bug-reports']))
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'bug_reports' }, () => qc.invalidateQueries({ queryKey: ['bug-reports'] }))
           .subscribe();
         subs.push(ch);
       } else if ((supabase as any).from) {
-        const s = (supabase as any).from('bug_reports').on('*', () => qc.invalidateQueries(['bug-reports'])).subscribe();
+        const s = (supabase as any).from('bug_reports').on('*', () => qc.invalidateQueries({ queryKey: ['bug-reports'] })).subscribe();
         subs.push(s);
       }
     } catch (err) {
@@ -85,12 +85,12 @@ function BugReports() {
     await supabase.from("bug_reports").insert({ reporter_id: user?.id ?? null, title: title.trim(), description: description.trim(), status: 'open' });
     setTitle("");
     setDescription("");
-    qc.invalidateQueries(["bug-reports"]);
+    qc.invalidateQueries({ queryKey: ["bug-reports"] });
   };
 
   const updateReport = async (id: string, patch: any) => {
     await supabase.from('bug_reports').update(patch).eq('id', id);
-    qc.invalidateQueries(['bug-reports']);
+    qc.invalidateQueries({ queryKey: ['bug-reports'] });
   };
 
   const reports = data ?? [];

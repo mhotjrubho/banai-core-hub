@@ -48,7 +48,7 @@ function Dashboard() {
         tables.forEach((t) => {
           const ch = (supabase as any)
             .channel(`public:${t}`)
-            .on('postgres_changes', { event: '*', schema: 'public', table: t }, () => qc.invalidateQueries(['dashboard-kpis']))
+            .on('postgres_changes', { event: '*', schema: 'public', table: t }, () => qc.invalidateQueries({ queryKey: ['dashboard-kpis'] }))
             .subscribe();
           subs.push(ch);
         });
@@ -56,7 +56,7 @@ function Dashboard() {
       } else if ((supabase as any).from) {
         // Fallback older API
         tables.forEach((t) => {
-          const s = (supabase as any).from(t).on('*', () => qc.invalidateQueries(['dashboard-kpis'])).subscribe();
+          const s = (supabase as any).from(t).on('*', () => qc.invalidateQueries({ queryKey: ['dashboard-kpis'] })).subscribe();
           subs.push(s);
         });
         if (tables.length > 0) setLiveConnected(true);
