@@ -125,7 +125,7 @@ function TaskContent({ taskId }: { taskId: string }) {
             <div key={p.key} className="border rounded-md p-3 mb-2">
               <div className="flex items-center gap-2 mb-2"><Badge>{p.label}</Badge><span className="text-xs text-muted-foreground">{list.length} קבצים</span></div>
               <div className="space-y-1">
-                {list.map((f) => (
+                {list.map((f: any) => (
                   <div key={f.id} className="flex items-center justify-between text-sm border-b last:border-0 py-1">
                     <a href={fileUrl(f.file_path)} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:underline">
                       <ExternalLink className="size-3" /> {f.file_name}
