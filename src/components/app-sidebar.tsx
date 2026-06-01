@@ -14,7 +14,7 @@ const NAV: NavItem[] = [
   { to: "/dashboard", label: "לוח בקרה", icon: LayoutDashboard, module: "dashboard" },
   { to: "/chat", label: "צ'אט פנימי", icon: MessageSquare, module: "chat" },
   { to: "/notifications", label: "התראות", icon: Bell, module: "notifications" },
-  { to: "/bug-reports", label: "דיווח באגים", icon: AlertTriangle, module: "bug_reports" },
+  { to: "/bug_reports", label: "דיווח באגים", icon: AlertTriangle, module: "bug_reports" },
   { to: "/students", label: "תלמידים", icon: Users, module: "students" },
   { to: "/staff", label: "כוח אדם", icon: UserCog, module: "staff" },
   { to: "/events", label: "אירועים וטיולים", icon: Calendar, module: "events" },
