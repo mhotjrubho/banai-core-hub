@@ -58,7 +58,13 @@ function StudentsPage() {
     if (isNewStudent && result && user) {
       const studentName = `${values.first_name} ${values.last_name}`;
       const adminUserIds = isAdmin ? [user.id] : [];
-      await notifyStudentAdded(user.id, studentName, result.id, adminUserIds);
+      console.log("🔔 Creating notification for student:", studentName, "Admin:", user.id);
+      try {
+        await notifyStudentAdded(user.id, studentName, result.id, adminUserIds);
+        console.log("✅ Notification sent successfully");
+      } catch (err) {
+        console.error("❌ Notification error:", err);
+      }
     }
     
     setEdit(null);

@@ -76,7 +76,10 @@ export async function notifyUsers(
   action_type?: string,
   action_id?: string
 ) {
-  if (!user_ids.length) return [];
+  if (!user_ids.length) {
+    console.warn("⚠️ notifyUsers called with empty user_ids");
+    return [];
+  }
 
   try {
     const notifications = user_ids.map((user_id) => ({
@@ -89,19 +92,22 @@ export async function notifyUsers(
       action_id,
     }));
 
+    console.log("🚀 Inserting notifications:", notifications);
+
     const { data, error } = await supabase
       .from("notifications")
       .insert(notifications)
       .select("*");
 
     if (error) {
-      console.error("Failed to create notifications:", error);
+      console.error("❌ DB Error:", error);
       return [];
     }
 
+    console.log("✅ Notifications saved:", data);
     return data ?? [];
   } catch (err) {
-    console.error("Error creating notifications:", err);
+    console.error("❌ Exception:", err);
     return [];
   }
 }
@@ -120,8 +126,13 @@ export async function notifyStudentAdded(
   const message = `${student_name} נוסף למערכת`;
   const action_url = `/students/${student_id}`;
 
+  console.log("📝 notifyStudentAdded called with:", { admin_id, student_name, student_id, notify_user_ids });
+  
+  const user_ids = notify_user_ids.length > 0 ? notify_user_ids : [admin_id];
+  console.log("📤 About to notify users:", user_ids);
+
   return notifyUsers(
-    notify_user_ids.length > 0 ? notify_user_ids : [admin_id],
+    user_ids,
     "student_added",
     title,
     message,
