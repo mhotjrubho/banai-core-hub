@@ -10,12 +10,15 @@ import { CrudDialog } from "@/components/crud-dialog";
 import { ConfirmDelete } from "@/components/confirm-delete";
 import { useList, useUpsert, useDelete } from "@/lib/queries";
 import { downloadXLSX } from "@/lib/csv";
+import { useAuth } from "@/lib/auth-context";
+import { notifyStudentAdded } from "@/lib/notifications";
 
 type Row = { id: string; first_name: string; last_name: string; national_id: string | null; phone: string | null; parent1_phone: string | null; parent2_phone: string | null; shiur: string | null; community_id: string | null; yeshiva_id: string | null; smart_card_status: string; is_active: boolean };
 
 export const Route = createFileRoute("/_authenticated/students")({ component: () => <RequireModule module="students"><StudentsPage /></RequireModule> });
 
 function StudentsPage() {
+  const { user, roles, isAdmin } = useAuth();
   const [q, setQ] = useState("");
   const [edit, setEdit] = useState<Row | null>(null);
   const { data: rows } = useList<Row>("students", { orderBy: "created_at" });
@@ -46,12 +49,27 @@ function StudentsPage() {
     { name: "notes", label: "הערות", type: "textarea" as const, colSpan: 2 as const },
   ];
 
+  // Handle student creation with notification
+  const handleAddStudent = async (values: any) => {
+    const isNewStudent = !edit;
+    const result = await upsert.mutateAsync(values);
+    
+    // Send notification if new student was added
+    if (isNewStudent && result && user) {
+      const studentName = `${values.first_name} ${values.last_name}`;
+      const adminUserIds = isAdmin ? [user.id] : [];
+      await notifyStudentAdded(user.id, studentName, result.id, adminUserIds);
+    }
+    
+    setEdit(null);
+  };
+
   return (
     <div>
       <PageHeader title="ניהול תלמידים" actions={
         <>
           <Button variant="outline" size="sm" onClick={() => downloadXLSX("students.xlsx", filtered)}>ייצוא Excel</Button>
-          <CrudDialog title="תלמיד חדש" fields={fields} onSubmit={(v) => upsert.mutateAsync(v)}
+          <CrudDialog title="תלמיד חדש" fields={fields} onSubmit={handleAddStudent}
             trigger={<Button size="sm"><Plus className="size-4" /> הוסף תלמיד</Button>} />
         </>
       } />
@@ -68,7 +86,10 @@ function StudentsPage() {
           ]}
           actions={(r) => (
             <div className="flex gap-1">
-              <CrudDialog title="עריכת תלמיד" fields={fields} initial={r} onSubmit={(v) => upsert.mutateAsync(v)}
+              <CrudDialog title="עריכת תלמיד" fields={fields} initial={r} onSubmit={(v) => {
+                setEdit(r);
+                return upsert.mutateAsync(v);
+              }}
                 trigger={<Button size="sm" variant="ghost"><Edit2 className="size-4" /></Button>} />
               <ConfirmDelete onConfirm={() => del.mutateAsync(r.id)} />
             </div>
