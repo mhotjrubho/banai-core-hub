@@ -55,7 +55,11 @@ function ChatPage() {
       .channel("public:chat_messages")
       .on("postgres_changes", { event: "*", schema: "public", table: "chat_messages" },
         () => qc.invalidateQueries({ queryKey: ["chat-messages"] }))
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR") {
+          console.error("Realtime channel error");
+        }
+      });
     return () => { supabase.removeChannel(ch); };
   }, [qc]);
 

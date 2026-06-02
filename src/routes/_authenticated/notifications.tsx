@@ -114,7 +114,11 @@ function NotificationsPage() {
           qc.invalidateQueries({ queryKey: ["notifications-all", user.id] });
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR") {
+          console.error("Realtime channel error");
+        }
+      });
     return () => {
       supabase.removeChannel(channel);
     };

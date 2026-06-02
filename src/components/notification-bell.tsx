@@ -85,7 +85,11 @@ export function NotificationBell() {
           qc.invalidateQueries({ queryKey: ["notifications-unread-count", user.id] });
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR") {
+          console.error("Realtime channel error");
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);
