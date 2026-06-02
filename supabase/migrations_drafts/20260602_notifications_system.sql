@@ -36,7 +36,7 @@ create type notification_channel as enum (
 -- Create main notifications table
 create table if not exists public.notifications (
   id text primary key default gen_random_uuid(),
-  user_id text not null,
+  user_id uuid not null,
   notification_type notification_type not null,
   title text not null,
   message text not null,
@@ -65,9 +65,12 @@ alter table public.notifications_settings
   add column if not exists quiet_hours_start time,
   add column if not exists quiet_hours_end time;
 
+-- Alter user_id type in notifications_settings if needed
+alter table public.notifications_settings alter column user_id type uuid using user_id::uuid;
+
 -- Create function to auto-create notifications for key events
 create or replace function notify_on_event(
-  p_user_id text,
+  p_user_id uuid,
   p_notification_type notification_type,
   p_title text,
   p_message text,
@@ -110,7 +113,7 @@ end;
 $$ language plpgsql security definer set search_path = public;
 
 -- Create function to bulk mark as read
-create or replace function mark_notifications_read(p_user_id text)
+create or replace function mark_notifications_read(p_user_id uuid)
 returns void as $$
 begin
   update public.notifications
@@ -120,7 +123,7 @@ end;
 $$ language plpgsql security definer set search_path = public;
 
 -- Create function to get unread count
-create or replace function get_unread_notifications_count(p_user_id text)
+create or replace function get_unread_notifications_count(p_user_id uuid)
 returns integer as $$
 declare
   v_count integer;
