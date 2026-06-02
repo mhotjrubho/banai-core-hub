@@ -33,7 +33,6 @@ import { Route as AuthenticatedAdminWebhooksRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminLogsRouteImport } from './routes/_authenticated/admin.logs'
 import { Route as AuthenticatedAdminImportRouteImport } from './routes/_authenticated/admin.import'
-import { Route as ApiPublicFormsTokenRouteImport } from './routes/api/public/forms.$token'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -159,11 +158,6 @@ const AuthenticatedAdminImportRoute =
     path: '/admin/import',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const ApiPublicFormsTokenRoute = ApiPublicFormsTokenRouteImport.update({
-  id: '/api/public/forms/$token',
-  path: '/api/public/forms/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -189,7 +183,6 @@ export interface FileRoutesByFullPath {
   '/events/$id': typeof AuthenticatedEventsIdRoute
   '/students/$id': typeof AuthenticatedStudentsIdRoute
   '/forms/p/$token': typeof FormsPTokenRoute
-  '/api/public/forms/$token': typeof ApiPublicFormsTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -215,7 +208,6 @@ export interface FileRoutesByTo {
   '/events/$id': typeof AuthenticatedEventsIdRoute
   '/students/$id': typeof AuthenticatedStudentsIdRoute
   '/forms/p/$token': typeof FormsPTokenRoute
-  '/api/public/forms/$token': typeof ApiPublicFormsTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -243,7 +235,6 @@ export interface FileRoutesById {
   '/_authenticated/events/$id': typeof AuthenticatedEventsIdRoute
   '/_authenticated/students/$id': typeof AuthenticatedStudentsIdRoute
   '/forms/p/$token': typeof FormsPTokenRoute
-  '/api/public/forms/$token': typeof ApiPublicFormsTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -271,7 +262,6 @@ export interface FileRouteTypes {
     | '/events/$id'
     | '/students/$id'
     | '/forms/p/$token'
-    | '/api/public/forms/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -297,7 +287,6 @@ export interface FileRouteTypes {
     | '/events/$id'
     | '/students/$id'
     | '/forms/p/$token'
-    | '/api/public/forms/$token'
   id:
     | '__root__'
     | '/'
@@ -324,7 +313,6 @@ export interface FileRouteTypes {
     | '/_authenticated/events/$id'
     | '/_authenticated/students/$id'
     | '/forms/p/$token'
-    | '/api/public/forms/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -333,7 +321,6 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
   FormsPTokenRoute: typeof FormsPTokenRoute
-  ApiPublicFormsTokenRoute: typeof ApiPublicFormsTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -506,13 +493,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminImportRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/api/public/forms/$token': {
-      id: '/api/public/forms/$token'
-      path: '/api/public/forms/$token'
-      fullPath: '/api/public/forms/$token'
-      preLoaderRoute: typeof ApiPublicFormsTokenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -590,8 +570,17 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
   FormsPTokenRoute: FormsPTokenRoute,
-  ApiPublicFormsTokenRoute: ApiPublicFormsTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
